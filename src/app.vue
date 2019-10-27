@@ -20,6 +20,7 @@
                      @input="updatePolicy"
                      v-model="policynumber"
                      placeholder="Введите номер полиса">
+              <p class="app__date-end" v-if="currentdate">Дата окончания {{ currentdate }}</p>
               <div class="form__error" v-if="policynumberError && formSubmitted">Номер полиса обязателен.</div>
             </div>
             <div class="form__block form__col app__form-company">
@@ -33,6 +34,7 @@
                   {{ props.option.name }}
                 </template>
               </multiselect>
+              <p class="app__phone" v-if="currentphone">Телефон {{ currentphone }}</p>
             </div>
           </div>
           <div class="form__block app__form-services">
@@ -54,8 +56,10 @@
               </div>
             </div>
           </div>
-          <div class="form__block app__form-btn">
-            <button type="submit" class="btn">Проверить</button>
+          <div class="form__block app__form-btn-wrapper">
+            <button type="submit" class="btn app__form-btn" :class="{ 'app__form-btn--submitted': formSubmitted }">
+              {{ formSubmitted ? 'Повторный запрос' : 'Проверить' }}
+            </button>
           </div>
         </form>
       </div>

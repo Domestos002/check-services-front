@@ -2,17 +2,12 @@
 @import "./variables"
 @import "./mixins"
 
-//vendor
-@import "~flexboxgrid-sass/flexboxgrid"
-
 //elements
 @import "../components/button/button"
 @import "../components/input/input"
 @import "../components/form/form"
 @import "../components/multiselect/multiselect"
 @import "../components/services-item/services-item"
-
-$gutter-width: 200px
 
 body
   font-family: $font-family-base
@@ -24,6 +19,7 @@ body
 
 .app
   width: 100%
+  min-width: 915px
   display: flex
   margin-top: 10px
   justify-content: center
@@ -53,8 +49,15 @@ body
     justify-content: center
   &__form-services
     margin-top: 60px
-  &__form-btn
+  &__form-btn-wrapper
     margin-top: 100px
+    display: flex
+    justify-content: center
+  &__form-btn
+    &--submitted
+      background-color: $blue
+      color: $white
+      border-color: $blue
   &__form-policy
     width: 54.5%
   &__form-company
@@ -64,6 +67,10 @@ body
     display: grid
     grid-template-columns: 1fr 1fr
     grid-gap: 20px
+  &__phone, &__date-end
+    font-size: $font-size-base
+    line-height: 24px
+    padding: 5px 20px 0 20px
   &__type
     font-size: $font-size-large
     line-height: 25px

@@ -12,7 +12,7 @@ export default {
 
     data() {
         return {
-            apiUrl: 'http://localhost:85/api/graphql',
+            apiUrl: 'https://apiservices.pstuffapp.com/api/graphql',
             policytypes: [],
             policyformats: [],
             companies: [],
@@ -21,6 +21,8 @@ export default {
             formSubmitted: false,
             currentcompany: null,
             currenttype: null,
+            currentphone: null,
+            currentdate: null,
             modal: false
         }
     },
@@ -31,7 +33,7 @@ export default {
 
     computed: {
         currentnumber() {
-            return this.policynumber.replace(/[' ', -]/g, '');
+            return this.policynumber.replace(/[ ,-]/g, '');
         },
         currentformat() {
             return this.policynumber.replace(/[0-9]/g, "9");
@@ -79,6 +81,7 @@ export default {
                                 id
                                 name
                                 logo
+                                phone
                             }
                         }
                     }
@@ -90,7 +93,7 @@ export default {
                 this.currenttype = this.policytypes[0];
                 this.companies = response.data.data.companies;
                 this.services = response.data.data.services.map(el => {
-                    el.active = true;
+                    el.active = false;
                     el.status = null;
                     return el
                 })
@@ -104,7 +107,6 @@ export default {
             this.currenttype = type
         },
         updatePolicy($event) {
-            this.formSubmitted = false;
             this.policynumber = $event.target.value.replace(/[^0-9, ' ', -]/g, '');
             const format = this.policyformats.find(el => el.format === this.currentformat);
             if(format) {
@@ -114,15 +116,40 @@ export default {
         updateSelected(service) {
             this.services.find(el => el.id === service.id).active = false;
         },
+        clearData() {
+            this.services = this.services.map(service => {
+                service.active = false;
+                return service
+            });
+            this.policynumber = null;
+            this.formSubmitted = false;
+            this.currentcompany = null;
+            this.currentphone = null;
+            this.currentdate = null;
+        },
+        formatPhone(val) {
+            return val.replace(/(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/, "$1 ($2) $3-$4-$5");
+        },
+        timestampToDate(timestamp) {
+            let newDate = new Date();
+            newDate.setTime(timestamp);
+            let year = newDate.getFullYear();
+            let month = newDate.getMonth()+1;
+            let day = newDate.getDate();
+            if(month < 10) month = '0' + month;
+            return `${day}.${month}.${year}`
+        },
         submitForm(e) {
             e.preventDefault();
-            this.formSubmitted = true;
-            if(!this.policynumberError) {
-                axios({
-                    method: "POST",
-                    url: this.apiUrl,
-                    data: {
-                        query: `
+            if(this.formSubmitted) {
+                this.clearData();
+            } else {
+                if(!this.policynumberError) {
+                    axios({
+                        method: "POST",
+                        url: this.apiUrl,
+                        data: {
+                            query: `
                     {
                         policy(number: "${this.currentnumber}", 
                                format: "${this.currentformat}") {
@@ -144,29 +171,32 @@ export default {
                         }
                     }
                 `
-                    }
-                })
-                .then(response => {
-                    const data = response.data.data.policy;
-                    console.log(data)
-                    if (data) {
-                        this.currenttype = data.type;
-                        this.currentcompany = data.company;
-                        this.services.map(service => {
-                            if (data.services.find(s => s.id === service.id)) {
-                                service.status = "included";
+                        }
+                    })
+                        .then(response => {
+                            this.formSubmitted = true;
+                            const data = response.data.data.policy;
+                            this.currentphone = this.formatPhone(this.currentcompany.phone);
+                            this.currentdate = this.timestampToDate(data.date_end);
+                            if (data) {
+                                this.currenttype = data.type;
+                                this.currentcompany = data.company;
+                                this.services.map(service => {
+                                    if (data.services.find(s => s.id === service.id)) {
+                                        service.status = "included";
+                                    } else {
+                                        service.status = "excluded";
+                                    }
+                                    return service
+                                })
                             } else {
-                                service.status = "excluded";
+                                this.modal = true;
                             }
-                            return service
                         })
-                    } else {
-                        this.modal = true;
-                    }
-                })
-                .catch(error => {
-                    alert(error)
-                })
+                        .catch(error => {
+                            alert(error)
+                        })
+                }
             }
         }
     },
