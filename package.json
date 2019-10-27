@@ -13,7 +13,7 @@
     "lodash": "^4.17.15",
     "reset-css": "^5.0.1",
     "vue": "^2.6.10",
-    "vue-multiselect": "^2.1.6"
+    "vue-multiselect": "git@github.com:Domestos002/vue-multiselect.git"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.0.0",

@@ -5,7 +5,7 @@
       <div class="app__inner">
         <div class="app__type-list">
           <span class="app__type"
-                @click="updateType(type)"
+                @click="!formSubmitted ? updateType(type) : ''"
                 :class="{ 'app__type--active': type.id === currenttype.id }"
                 v-for="type in policytypes" :key="type.id">
             {{ type.name }}
@@ -15,6 +15,7 @@
           <div class="form__block form__row">
             <div class="form__block form__col app__form-policy">
               <input title="Номер полиса"
+                     :disabled="formSubmitted"
                      type="text"
                      class="input"
                      @input="updatePolicy"
@@ -24,7 +25,12 @@
               <div class="form__error" v-if="policynumberError && formSubmitted">Номер полиса обязателен.</div>
             </div>
             <div class="form__block form__col app__form-company">
-              <multiselect v-model="currentcompany" placeholder="Выберите страховую компанию" label="title" :options="companies" :show-labels="false">
+              <multiselect :disabled="formSubmitted"
+                           v-model="currentcompany"
+                           placeholder="Выберите страховую компанию"
+                           label="title"
+                           :options="companies"
+                           :show-labels="false">
                 <template slot="singleLabel" slot-scope="props">
                   <icon class="multiselect__img" :name="props.option.logo" />
                   {{ props.option.name }}
