@@ -1,0 +1,84 @@
+@import "~reset-css/sass/reset"
+@import "./variables"
+@import "./mixins"
+
+//vendor
+@import "~flexboxgrid-sass/flexboxgrid"
+
+//elements
+@import "../components/button/button"
+@import "../components/input/input"
+@import "../components/form/form"
+@import "../components/multiselect/multiselect"
+@import "../components/services-item/services-item"
+
+$gutter-width: 200px
+
+body
+  font-family: $font-family-base
+  font-weight: 400
+  color: $black
+  background-color: #494949
+  &.body--modal
+    overflow: hidden
+
+.app
+  width: 100%
+  display: flex
+  margin-top: 10px
+  justify-content: center
+  &__form
+    margin-top: 50px
+  &__form-btn
+    display: flex
+    justify-content: center
+  &__title
+    font-size: $font-size-xlarge
+    text-align: center
+    font-weight: 700
+  &__dialog
+    max-width: 915px
+    width: 100%
+    box-sizing: border-box
+    margin: 0 auto
+    padding: 55px 70px 40px 70px
+    background: $white
+    border-radius: 10px
+    display: inline-block
+    vertical-align: middle
+  &__inner
+    margin-top: 65px
+  &__type-list
+    display: flex
+    justify-content: center
+  &__form-services
+    margin-top: 60px
+  &__form-btn
+    margin-top: 100px
+  &__form-policy
+    width: 54.5%
+  &__form-company
+    width: 45.5%
+  &__services-list
+    margin-top: 35px
+    display: grid
+    grid-template-columns: 1fr 1fr
+    grid-gap: 20px
+  &__type
+    font-size: $font-size-large
+    line-height: 25px
+    cursor: pointer
+    display: flex
+    align-items: center
+    text-align: center
+    justify-content: center
+    color: $gray
+    border: 1px solid rgba(0, 0, 0, 0.13)
+    padding: 6px 35px
+    &:first-child
+      border-radius: 5px 0 0 5px
+    &:last-child
+      border-radius: 0 5px 5px 0
+    &--active
+      color: $white
+      background-color: $red

@@ -1,0 +1,80 @@
+@mixin respond-to($media)
+  @if $media == sm
+    @media only screen and (max-width: $small - 1) //479
+      @content
+
+  @else if $media == md
+    @media only screen and (max-width: $medium - 1)	//767
+      @content
+
+  @else if $media == lg
+    @media only screen and (max-width: $large - 1) //959
+      @content
+
+  @else if $media == dk
+    @media only screen and (max-width: $desktop - 1) //1023
+      @content
+
+  @else if $media == xlg
+    @media only screen and (max-width: $xlarge - 1) //1219
+      @content
+
+@mixin min-respond-to($media)
+  @if $media == sm
+    @media only screen and (min-width: $small)
+      @content
+
+  @else if $media == md
+    @media only screen and (min-width: $medium)
+      @content
+
+  @else if $media == lg
+    @media only screen and (min-width: $large)
+      @content
+
+  @else if $media == dk
+    @media only screen and (min-width: $desktop)
+      @content
+
+  @else if $media == xlg
+    @media only screen and (min-width: $xlarge)
+      @content
+
+=trans($trans: all 0.2s ease 0s)
+  transition: $trans
+
+=pos($var)
+  @if $var == tm
+    +transform(translateY(-50%))
+    top: 50%
+  @if $var == lm
+    +transform(translateX(-50%))
+    left: 50%
+  @if $var == m
+    +transform(translate3d(-50%, -50%, 0))
+    top: 50%
+    left: 50%
+
+=chevron($size, $border-size, $direction, $color)
+  z-index: 1
+  content: ''
+  display: inline-block
+  width: $size
+  height: $size
+  background: transparent
+  @if $direction == t
+    border: transparent
+    border-top: $border-size solid $color
+    border-left: $border-size solid $color
+  @else if $direction == r
+    border: transparent
+    border-top: $border-size solid $color
+    border-right: $border-size solid $color
+  @else if $direction == b
+    border: transparent
+    border-bottom: $border-size solid $color
+    border-right: $border-size solid $color
+  @else if $direction == l
+    border: transparent
+    border-bottom: $border-size solid $color
+    border-left: $border-size solid $color

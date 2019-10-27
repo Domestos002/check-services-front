@@ -1,0 +1,47 @@
+@import "~vue-multiselect/dist/vue-multiselect.min.css"
+
+.multiselect
+  min-height: 35px
+  &__tags
+    min-height: 35px
+    border: 1px solid $gray
+    border-radius: 50px
+    padding: 8px 40px 0 20px
+  &__placeholder
+    color: $gray
+    font-size: $font-size-base
+  &__input
+    font-size: $font-size-base
+  &__single
+    display: flex
+    align-items: center
+    font-size: $font-size-large
+    margin-bottom: 0
+    margin-top: -4px
+    .multiselect__img
+      margin-left: -10px
+  &__content-wrapper
+    border: 1px solid $blue
+    border-top: none
+  &__option
+    min-height: auto
+    padding: 7px 12px
+    display: flex
+    align-items: center
+    &.multiselect__option--highlight
+      background: $blue
+  &__img
+    margin-right: 10px
+  &__select
+    display: none
+  &.multiselect--active
+    .multiselect__tags
+      border-color: $blue
+      border-bottom: none
+      padding-top: 7px
+      border-radius: 15px 15px 0 0
+  &.multiselect--above.multiselect--active
+    .multiselect__tags
+      border-bottom: 1px solid $blue
+      border-top: none
+      border-radius: 0 0 15px 15px

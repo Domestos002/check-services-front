@@ -1,0 +1,66 @@
+@import "../variables"
+
+.modal
+  position: fixed
+  top: 0
+  bottom: 0
+  right: 0
+  padding: 0 20px
+  background: rgba(73, 73, 73, 0.3)
+  text-align: center
+  overflow-y: scroll
+  overflow-x: hidden
+  white-space: nowrap
+  font-size: 0
+  left: 0
+  z-index: 11
+  -webkit-overflow-scrolling: touch
+  -ms-touch-action: cross-slide-y pinch-zoom double-tap-zoom
+  touch-action: cross-slide-y pinch-zoom double-tap-zoom
+  -webkit-transform: translateZ(0)
+  transform: translateZ(0)
+  &::before
+    content: ''
+    display: inline-block
+    height: 100%
+    vertical-align: middle
+  &__dialog
+    width: 100%
+    position: relative
+    z-index: 4
+    max-width: 395px
+    padding: 30px
+    border-radius: 15px
+    margin-left: auto
+    margin-right: auto
+    display: inline-block
+    vertical-align: middle
+    background-color: $white
+    box-sizing: border-box
+  &__submit-row
+    text-align: left
+  &__close
+    display: block
+    position: absolute
+    cursor: pointer
+    width: 30px
+    height: 30px
+    right: -45px
+    top: 3px
+    z-index: 10
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNS42NDIgMTUuNjQyIj48cGF0aCBmaWxsPSIjZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04Ljg4MiA3LjgyMWw2LjU0MS02LjU0MUEuNzUuNzUgMCAxIDAgMTQuMzYyLjIxOUw3LjgyMSA2Ljc2IDEuMjguMjJBLjc1Ljc1IDAgMSAwIC4yMTkgMS4yODFMNi43NiA3LjgyMmwtNi41NCA2LjU0YS43NS43NSAwIDAgMCAxLjA2IDEuMDYxbDYuNTQxLTYuNTQxIDYuNTQxIDYuNTQxYS43NS43NSAwIDEgMCAxLjA2LTEuMDYxbC02LjU0LTYuNTQxeiIvPjwvc3ZnPg==)
+    background-repeat: no-repeat
+    background-size: 100%
+    background-position: 50% 50%
+  &__title
+    font-weight: 700
+    font-size: 24px
+    color: $black
+  &__subtitle
+    font-size: $font-size-base
+    margin-top: 15px
+    text-align: center
+  &__btn-wrapper
+    margin-top: 35px
+  &__btn.btn
+    min-width: 165px
