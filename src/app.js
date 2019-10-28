@@ -19,6 +19,7 @@ export default {
             services: [],
             policynumber: null,
             formSubmitted: false,
+            requestDone: false,
             currentcompany: null,
             currenttype: null,
             currentphone: null,
@@ -44,9 +45,22 @@ export default {
         notChosenServices() {
             return this.services.filter(service => !service.active)
         },
-        policynumberError() {
-            return !this.policynumber;
-        }
+        submitBtnClass() {
+            if(this.requestDone) {
+                return 'btn--secondary'
+            } else if(this.formErrors.valid) {
+                return 'btn--primary'
+            }
+        },
+        formErrors() {
+            let errors = {
+                policy: !this.policynumber,
+                company: !this.currentcompany,
+                services: !this.chosenServices.length > 0,
+            };
+            errors.valid = !(errors.policy | errors.company || errors.services);
+            return errors
+        },
     },
 
     methods: {
@@ -122,6 +136,7 @@ export default {
                 return service
             });
             this.policynumber = null;
+            this.requestDone = false;
             this.formSubmitted = false;
             this.currentcompany = null;
             this.currentphone = null;
@@ -141,61 +156,63 @@ export default {
         },
         submitForm(e) {
             e.preventDefault();
-            if(this.formSubmitted) {
+            this.formSubmitted = true;
+            if(this.requestDone) {
                 this.clearData();
             } else {
-                if(!this.policynumberError) {
+                if(this.formErrors.valid) {
                     axios({
                         method: "POST",
                         url: this.apiUrl,
                         data: {
                             query: `
-                    {
-                        policy(number: "${this.currentnumber}", 
-                               format: "${this.currentformat}") {
-                            number
-                            date_end
-                            type {
-                                id  
-                                name
-                            }
-                            company {
-                                id
-                                name
-                                logo
-                            }
-                            services {
-                                id  
-                                name
-                            }
-                        }
-                    }
-                `
+                                {
+                                    policy(number: "${this.currentnumber}", 
+                                           format: "${this.currentformat}") {
+                                        number
+                                        date_end
+                                        type {
+                                            id  
+                                            name
+                                        }
+                                        company {
+                                            id
+                                            name
+                                            logo
+                                        }
+                                        services {
+                                            id  
+                                            name
+                                        }
+                                    }
+                                }
+                            `
                         }
                     })
-                        .then(response => {
-                            this.formSubmitted = true;
-                            const data = response.data.data.policy;
+                    .then(response => {
+                        this.requestDone = true;
+                        const data = response.data.data.policy;
+                        if (data) {
                             this.currentphone = this.formatPhone(this.currentcompany.phone);
                             this.currentdate = this.timestampToDate(data.date_end);
-                            if (data) {
-                                this.currenttype = data.type;
-                                this.currentcompany = data.company;
-                                this.services.map(service => {
-                                    if (data.services.find(s => s.id === service.id)) {
-                                        service.status = "included";
-                                    } else {
-                                        service.status = "excluded";
-                                    }
-                                    return service
-                                })
-                            } else {
-                                this.modal = true;
-                            }
-                        })
-                        .catch(error => {
-                            alert(error)
-                        })
+                            this.currenttype = data.type;
+                            this.currentcompany = data.company;
+                            this.services.map(service => {
+                                if (data.services.find(s => s.id === service.id)) {
+                                    service.status = "included";
+                                } else {
+                                    service.status = "excluded";
+                                }
+                                return service
+                            })
+                        } else {
+                            this.requestDone = false;
+                            this.modal = true;
+                        }
+                    })
+                    .catch(error => {
+                        alert(error)
+                    })
                 }
             }
         }

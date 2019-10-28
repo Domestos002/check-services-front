@@ -5,7 +5,7 @@
       <div class="app__inner">
         <div class="app__type-list">
           <span class="app__type"
-                @click="!formSubmitted ? updateType(type) : ''"
+                @click="!requestDone ? updateType(type) : ''"
                 :class="{ 'app__type--active': type.id === currenttype.id }"
                 v-for="type in policytypes" :key="type.id">
             {{ type.name }}
@@ -15,17 +15,17 @@
           <div class="form__block form__row">
             <div class="form__block form__col app__form-policy">
               <input title="Номер полиса"
-                     :disabled="formSubmitted"
+                     :disabled="requestDone"
                      type="text"
                      class="input"
                      @input="updatePolicy"
                      v-model="policynumber"
                      placeholder="Введите номер полиса">
               <p class="app__date-end" v-if="currentdate">Дата окончания {{ currentdate }}</p>
-              <div class="form__error" v-if="policynumberError && formSubmitted">Номер полиса обязателен.</div>
+              <div class="form__error" v-if="formErrors.policy && formSubmitted">Номер полиса обязателен.</div>
             </div>
             <div class="form__block form__col app__form-company">
-              <multiselect :disabled="formSubmitted"
+              <multiselect :disabled="requestDone"
                            v-model="currentcompany"
                            placeholder="Выберите страховую компанию"
                            label="title"
@@ -41,12 +41,14 @@
                 </template>
               </multiselect>
               <p class="app__phone" v-if="currentphone">Телефон {{ currentphone }}</p>
+              <div class="form__error" v-if="formErrors.company && formSubmitted">Страховая компания обязательна.</div>
             </div>
           </div>
           <div class="form__block app__form-services">
             <label class="form__label">Выберите медицинские услуги</label>
             <multiselect @input="updateServices"
-                         placeholder="Введите запрашиваемую услугу для пациента" :options="notChosenServices" :max-height="180" :show-labels="false">
+                         placeholder="Введите запрашиваемую услугу для пациента"
+                         :options="notChosenServices" :max-height="180" :show-labels="false">
               <template slot="singleLabel" slot-scope="props">
                 {{ props.option.name }}
               </template>
@@ -54,6 +56,9 @@
                 {{ props.option.name }}
               </template>
             </multiselect>
+            <div class="form__error" v-if="formErrors.services && formSubmitted">
+              Выберите хотя бы 1 услугу
+            </div>
             <div class="app__services-list" v-if="chosenServices.length > 0">
               <div class="services-item" v-for="service in chosenServices" :key="service.id" @click="updateSelected(service)">
                 <icon class="services-item__status" :name="service.status === 'included' ? 'check' : 'stop'" v-if="service.status"></icon>
@@ -63,8 +68,8 @@
             </div>
           </div>
           <div class="form__block app__form-btn-wrapper">
-            <button type="submit" class="btn app__form-btn" :class="{ 'app__form-btn--submitted': formSubmitted }">
-              {{ formSubmitted ? 'Повторный запрос' : 'Проверить' }}
+            <button type="submit" class="btn app__form-btn" :class="submitBtnClass">
+              {{ requestDone ? 'Повторный запрос' : 'Проверить' }}
             </button>
           </div>
         </form>
