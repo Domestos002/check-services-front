@@ -137,6 +137,7 @@ export default {
         clearData() {
             this.services = this.services.map(service => {
                 service.active = false;
+                service.status = null;
                 return service
             });
             this.policynumber = null;
