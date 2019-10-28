@@ -121,14 +121,18 @@ export default {
             this.currenttype = type
         },
         updatePolicy($event) {
-            this.policynumber = $event.target.value.replace(/[^0-9, ' ', -]/g, '');
+            this.policynumber = this.formatPolicyInput($event.target.value);
+            this.setCompanyTypeByPolicy();
+        },
+        updateSelectedServices(service) {
+            this.services.find(el => el.id === service.id).active = false;
+        },
+        setCompanyTypeByPolicy() {
             const format = this.policyformats.find(el => el.format === this.currentformat);
             if(format) {
                 this.currentcompany = format.company;
                 this.currenttype = format.type;
-        }},
-        updateSelected(service) {
-            this.services.find(el => el.id === service.id).active = false;
+            }
         },
         clearData() {
             this.services = this.services.map(service => {
@@ -142,6 +146,9 @@ export default {
             this.currentphone = null;
             this.currentdate = null;
         },
+        formatPolicyInput(val) {
+            return val.replace(/[^0-9,' ',-]/g, '');
+        },
         formatPhone(val) {
             return val.replace(/(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/, "$1 ($2) $3-$4-$5");
         },
@@ -154,9 +161,20 @@ export default {
             if(month < 10) month = '0' + month;
             return `${day}.${month}.${year}`
         },
+        setStatusToServices(responseServices) {
+            this.services.map(service => {
+                if (responseServices.find(s => s.id === service.id)) {
+                    service.status = "included";
+                } else {
+                    service.status = "excluded";
+                }
+                return service
+            })
+        },
         submitForm(e) {
             e.preventDefault();
             this.formSubmitted = true;
+            this.setCompanyTypeByPolicy();
             if(this.requestDone) {
                 this.clearData();
             } else {
@@ -192,20 +210,11 @@ export default {
                     .then(response => {
                         this.requestDone = true;
                         const data = response.data.data.policy;
-                        if (data) {
+                        if (data) { //полис найден
                             this.currentphone = this.formatPhone(this.currentcompany.phone);
                             this.currentdate = this.timestampToDate(data.date_end);
-                            this.currenttype = data.type;
-                            this.currentcompany = data.company;
-                            this.services.map(service => {
-                                if (data.services.find(s => s.id === service.id)) {
-                                    service.status = "included";
-                                } else {
-                                    service.status = "excluded";
-                                }
-                                return service
-                            })
-                        } else {
+                            this.setStatusToServices(data.services);
+                        } else { //полис не найден
                             this.requestDone = false;
                             this.modal = true;
                         }

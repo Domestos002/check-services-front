@@ -60,7 +60,7 @@
               Выберите хотя бы 1 услугу
             </div>
             <div class="app__services-list" v-if="chosenServices.length > 0">
-              <div class="services-item" v-for="service in chosenServices" :key="service.id" @click="updateSelected(service)">
+              <div class="services-item" v-for="service in chosenServices" :key="service.id" @click="updateSelectedServices(service)">
                 <icon class="services-item__status" :name="service.status === 'included' ? 'check' : 'stop'" v-if="service.status"></icon>
                 {{ service.name }}
                 <icon  class="services-item__close" name="close"></icon>
