@@ -124,7 +124,8 @@ export default {
             this.policynumber = this.formatPolicyInput($event.target.value);
             this.setCompanyTypeByPolicy();
         },
-        updateSelectedServices(service) {
+        updateSelectedServices($event, service) {
+            if(!$event.target.matches('.services-item__close')) return false;
             this.services.find(el => el.id === service.id).active = false;
         },
         setCompanyTypeByPolicy() {

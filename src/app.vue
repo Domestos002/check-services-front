@@ -22,7 +22,7 @@
                      v-model="policynumber"
                      placeholder="Введите номер полиса">
               <p class="app__date-end" v-if="currentdate">Дата окончания {{ currentdate }}</p>
-              <div class="form__error" v-if="formErrors.policy && formSubmitted">Номер полиса обязателен.</div>
+              <div class="form__error" v-if="formErrors.policy && formSubmitted && !requestDone">Номер полиса обязателен.</div>
             </div>
             <div class="form__block form__col app__form-company">
               <multiselect :disabled="requestDone"
@@ -41,7 +41,7 @@
                 </template>
               </multiselect>
               <p class="app__phone" v-if="currentphone">Телефон {{ currentphone }}</p>
-              <div class="form__error" v-if="formErrors.company && formSubmitted">Страховая компания обязательна.</div>
+              <div class="form__error" v-if="formErrors.company && formSubmitted && !requestDone">Страховая компания обязательна.</div>
             </div>
           </div>
           <div class="form__block app__form-services">
@@ -56,11 +56,11 @@
                 {{ props.option.name }}
               </template>
             </multiselect>
-            <div class="form__error" v-if="formErrors.services && formSubmitted">
+            <div class="form__error" v-if="formErrors.services && formSubmitted && !requestDone">
               Выберите хотя бы 1 услугу
             </div>
             <div class="app__services-list" v-if="chosenServices.length > 0">
-              <div class="services-item" v-for="service in chosenServices" :key="service.id" @click="updateSelectedServices(service)">
+              <div class="services-item" v-for="service in chosenServices" :key="service.id" @click="updateSelectedServices($event, service)">
                 <icon class="services-item__status" :name="service.status === 'included' ? 'check' : 'stop'" v-if="service.status"></icon>
                 {{ service.name }}
                 <icon  class="services-item__close" name="close"></icon>
